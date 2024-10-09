@@ -1,57 +1,48 @@
+# Super/account/views.py
 
-from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Hospital
-from .serializers import CustomUserSerializer, HospitalSerializer, CustomTokenObtainPairSerializer
-
-User = get_user_model()
+from .serializers import (
+    CustomUserSerializer,
+    CustomTokenObtainPairSerializer,
+    PasswordResetRequestSerializer,
+    PasswordResetSerializer
+)
 
 @api_view(['POST'])
-def hospital_login(request):
+def admin_login(request):
     """
-    Hospital login to get JWT token.
+    Admin login to manage hospital settings.
     """
     serializer = CustomTokenObtainPairSerializer(data=request.data)
     if serializer.is_valid():
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def list_users_by_role(request):
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def create_user(request):
     """
-    List users based on role for a specific hospital.
+    Admin creates a new user account (nurse, pharmacist, lab technician, etc.).
     """
-    user_type = request.query_params.get('user_type')
-    if user_type is None:
-        return Response({"error": "user_type parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
+    serializer = CustomUserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    users = User.objects.filter(
-        hospital=request.user.hospital,
-        user_type__name=user_type
-    )
-    serializer = CustomUserSerializer(users, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def hospital_detail(request, pk):
+@api_view(['POST'])
+def user_login(request):
     """
-    Retrieve details of a specific hospital.
+    User login to access department-specific functionalities.
     """
-    try:
-        hospital = Hospital.objects.get(pk=pk)
-        serializer = HospitalSerializer(hospital)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Hospital.DoesNotExist:
-        return Response({"error": "Hospital not found"}, status=status.HTTP_404_NOT_FOUND)
-
+    serializer = CustomTokenObtainPairSerializer(data=request.data)
+    if serializer.is_valid():
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -67,4 +58,24 @@ def logout_user(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def password_reset_request(request):
+    """
+    Request a password reset link.
+    """
+    serializer = PasswordResetRequestSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Password reset link sent."}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def password_reset(request):
+    """
+    Reset the user's password.
+    """
+    serializer = PasswordResetSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -24,8 +24,7 @@ class ReceptionPatient(Patient):
     Model to represent patients registered at the reception.
     Inherits from the Patient model in the patients app.
     """
-    # You can add additional fields specific to reception if needed
-    # For example, you might want to track the registration date
+    
     registration_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

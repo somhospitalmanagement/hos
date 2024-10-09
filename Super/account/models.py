@@ -45,13 +45,5 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.user_type.name if self.user_type else 'No user type'})"
 
-    def clean(self):
-        # Ensure the user belongs to a department within the selected hospital
-        if self.department and self.hospital and self.department.hospital != self.hospital:
-            raise ValidationError(f"{self.department.name} does not belong to {self.hospital.name}.")
-        if not self.user_type:
-            raise ValidationError('User type must be specified.')
-
-
 
 

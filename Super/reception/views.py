@@ -1,8 +1,9 @@
-# reception/views.py
+# Super/reception/views.py
 
 from django.http import JsonResponse
 from .forms import PatientRegistrationForm
-from .models import ReceptionPatient  # Import the ReceptionPatient model
+from .models import ReceptionPatient
+from .serializers import ReceptionPatientSerializer
 import json
 
 def register_patient(request):
@@ -11,10 +12,10 @@ def register_patient(request):
         form = PatientRegistrationForm(data)
         if form.is_valid():
             patient = form.save(commit=False)
-            # Set the hospital from the request or user context
-            patient.hospital = request.user.hospital  # Assuming the user has a hospital attribute
+            patient.hospital = request.user.hospital  # Set the hospital from the logged-in user
             patient.save()
-            return JsonResponse({'message': 'Patient registered successfully!', 'patient_id': patient.id}, status=201)
+            serializer = ReceptionPatientSerializer(patient)  # Use the serializer
+            return JsonResponse({'message': 'Patient registered successfully!', 'patient': serializer.data}, status=201)
         return JsonResponse({'errors': form.errors}, status=400)
     
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
@@ -23,5 +24,6 @@ def retrieve_patients(request):
     """
     View to retrieve and return a list of patients as JSON.
     """
-    patients = ReceptionPatient.objects.all().values('first_name', 'last_name', 'dob', 'hospital__name', 'medical_history') 
-    return JsonResponse(list(patients), safe=False)
+    patients = ReceptionPatient.objects.all()
+    serializer = ReceptionPatientSerializer(patients, many=True)  # Use the serializer
+    return JsonResponse(serializer.data, safe=False)
