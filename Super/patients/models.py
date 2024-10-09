@@ -16,3 +16,12 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - Patient"
+
+
+class MedicalRecord(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    record_date = models.DateTimeField(auto_now_add=True)
+    details = models.TextField()
+
+    def __str__(self):
+        return f"Record for {self.patient} on {self.record_date}"

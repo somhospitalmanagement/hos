@@ -6,7 +6,12 @@ from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import CustomUser
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,21 +20,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        
         if 'hospital' not in validated_data or 'department' not in validated_data or 'user_type' not in validated_data:
             raise serializers.ValidationError("Hospital, department, and user type must be provided.")
 
-        
         user = CustomUser(**validated_data)
-        
-        
         user.set_password(validated_data['password'])
-        
-        
         user.save()
         
+        # Log user creation
+        logger.info(f"User created: {user.username}")
+        
         return user
-    
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        token['user_type'] = user.user_type
+        return token
 
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -52,6 +61,9 @@ class PasswordResetRequestSerializer(serializers.Serializer):
             [email],
             fail_silently=False,
         )
+        
+        # Log password reset request
+        logger.info(f"Password reset requested for user: {user.username}")
 
 class PasswordResetSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
@@ -73,3 +85,7 @@ class PasswordResetSerializer(serializers.Serializer):
         user = CustomUser.objects.get(pk=urlsafe_base64_decode(self.validated_data['uid']).decode())
         user.set_password(self.validated_data['password'])
         user.save()
+        
+        # Log password reset
+        logger.info(f"Password reset for user: {user.username}")
+

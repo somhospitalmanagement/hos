@@ -18,7 +18,7 @@ class Nurse(models.Model):
         return f"{self.user.username} - Nurse"
 
     def clean(self):
-        # Ensure the department belongs to the nurse's hospital
+        
         if self.department.hospital != self.hospital:
             raise ValidationError(f"Department {self.department.name} does not belong to {self.hospital.name}.")
     

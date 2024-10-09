@@ -1,3 +1,5 @@
+# Super/doctors/views.py
+
 from rest_framework import viewsets
 from .models import Consultation
 from .serializers import ConsultationSerializer

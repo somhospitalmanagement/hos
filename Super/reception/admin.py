@@ -1,31 +1,21 @@
-# reception/admin.py
+# Super/reception/admin.py
 
 from django.contrib import admin
-from .models import Reception, ReceptionPatient
-
-
-class ReceptionAdmin(admin.ModelAdmin):
-    """
-    Admin view for managing patients registered at the reception.
-    """
-    list_display = ('user', 'hospital',)
-    search_fields = ('user__username', 'hospital__name')
-    list_filter = ('hospital',)
-
-    def __str__(self):
-        return self.user.username 
-
+from .models import Reception, ReceptionPatient, Appointment
 
 class ReceptionPatientAdmin(admin.ModelAdmin):
-    """
-    Admin view for managing patients registered at the reception.
-    """
-    list_display = ('first_name', 'last_name', 'dob', 'hospital', 'registration_date')  # Display these fields in the list view
-    search_fields = ('first_name', 'last_name', 'hospital__name')  # Enable search by first name, last name, and hospital name
-    list_filter = ('hospital',)  # Filter by hospital
+    list_display = ('first_name', 'last_name', 'registration_date', 'hospital')
+    search_fields = ('first_name', 'last_name', 'hospital__name')
+    list_filter = ('hospital', 'registration_date')
+    ordering = ('registration_date',)
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"  # String representation for the admin interface
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'doctor', 'appointment_date', 'notes')
+    search_fields = ('patient__first_name', 'patient__last_name', 'doctor__username')
+    list_filter = ('doctor', 'appointment_date')
+    ordering = ('appointment_date',)
 
-# Register the ReceptionPatient model with the admin site
+# Register the models with the admin site
+admin.site.register(Reception)
 admin.site.register(ReceptionPatient, ReceptionPatientAdmin)
+admin.site.register(Appointment, AppointmentAdmin)
