@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'hospital',
     'lab',
     'nurse',
+    'reception',
 ]
 
 

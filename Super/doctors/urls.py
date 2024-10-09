@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 from .views import ConsultationViewSet
 
 router = DefaultRouter()
-router.register(r'consultations', ConsultationViewSet, basename='consultation')  # Register the ViewSet
+router.register(r'consultations', ConsultationViewSet, basename='consultation')
 
 urlpatterns = [
-    path('', include(router.urls)),  # Include the router URLs
+    path('', include(router.urls)),
 ]

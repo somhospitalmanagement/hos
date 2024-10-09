@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Hospital, UserType, Department
-from .serializers import HospitalSerializer, UserTypeSerializer, DepartmentSerializer
+from .models import Hospital, Department
+from .serializers import HospitalSerializer, DepartmentSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -11,10 +11,6 @@ class HospitalViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
 
-class UserTypeViewSet(viewsets.ModelViewSet):
-    queryset = UserType.objects.all()
-    serializer_class = UserTypeSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):

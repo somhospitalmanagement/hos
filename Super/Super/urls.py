@@ -10,7 +10,8 @@ urlpatterns = [
     path('api/', include('lab.urls')),         # Include lab URLs
     path('api/', include('pharmacy.urls')),    # Include pharmacy URLs
     path('api/', include('nurse.urls')),
-    path('api/', include('account.urls')),      # Include nurse URLs
+    path('api/', include('account.urls')),
+    path('api/', include('reception.urls')),   # Include nurse URLs
 ]
 
 
