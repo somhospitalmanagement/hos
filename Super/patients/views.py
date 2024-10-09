@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Patient
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import PatientUpdateForm  # Assuming you create this form for updating patient info
+from .forms import PatientUpdateForm
 
 @login_required
 def patient_list(request):

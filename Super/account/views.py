@@ -1,14 +1,14 @@
 
-from django.contrib.auth import get_user_model  # Import get_user_model
+from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Hospital  # Importing the Hospital model
+from .models import Hospital
 from .serializers import CustomUserSerializer, HospitalSerializer, CustomTokenObtainPairSerializer
 
-User = get_user_model()  # Get the currently active user model
+User = get_user_model()
 
 @api_view(['POST'])
 def hospital_login(request):
@@ -31,7 +31,7 @@ def list_users_by_role(request):
     if user_type is None:
         return Response({"error": "user_type parameter is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    users = User.objects.filter(  # Use User instead of CustomUser
+    users = User.objects.filter(
         hospital=request.user.hospital,
         user_type__name=user_type
     )
