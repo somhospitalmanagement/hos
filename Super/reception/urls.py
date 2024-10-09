@@ -1,7 +1,9 @@
 # reception/urls.py
+
 from django.urls import path
-from . import views
+from .views import register_patient, retrieve_patients
 
 urlpatterns = [
-    path('register/', views.register_patient, name='register_patient'),
+    path('register/', register_patient, name='register_patient'),
+    path('patients/', retrieve_patients, name='retrieve_patients'),
 ]

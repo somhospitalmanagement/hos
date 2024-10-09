@@ -3,8 +3,9 @@
 from django.db import models
 from hospital.models import Hospital
 from django.conf import settings
+from patients.models import Patient
 
-class Patient(models.Model):
+class Reception(models.Model):
     """
     Model to represent patients registered at the reception.
     """
@@ -13,3 +14,19 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - Reception Patient"
+
+
+
+
+
+class ReceptionPatient(Patient):
+    """
+    Model to represent patients registered at the reception.
+    Inherits from the Patient model in the patients app.
+    """
+    # You can add additional fields specific to reception if needed
+    # For example, you might want to track the registration date
+    registration_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - Reception Patient"

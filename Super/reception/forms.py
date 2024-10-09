@@ -9,4 +9,4 @@ class PatientRegistrationForm(forms.ModelForm):
     """
     class Meta:
         model = Patient
-        fields = ['first_name', 'last_name', 'dob', 'hospital', 'medical_history', 'current_department']
+        fields = ['first_name', 'last_name', 'dob', 'medical_history', 'current_department']
