@@ -10,4 +10,3 @@ class ConsultationViewSet(viewsets.ModelViewSet):
 
 
 
-
