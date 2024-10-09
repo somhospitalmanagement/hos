@@ -1,16 +1,12 @@
 # reception/forms.py
 
 from django import forms
-from patients.models import Patient
+from .models import ReceptionPatient  # Import the ReceptionPatient model
 
 class PatientRegistrationForm(forms.ModelForm):
     """
     Form for registering new patients.
     """
     class Meta:
-        model = Patient
-<<<<<<< HEAD
+        model = ReceptionPatient  # Use ReceptionPatient instead of Patient
         fields = ['first_name', 'last_name', 'dob', 'medical_history', 'current_department']
-=======
-        fields = ['first_name', 'last_name', 'dob', 'medical_history', 'hospital']
->>>>>>> f6967acb9d9876b25d83f85b103629027b0e82ca
