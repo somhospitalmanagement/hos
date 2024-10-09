@@ -1,17 +1,18 @@
-# urls.py (main project)
-from django.contrib import admin  # Import the admin module
+
+from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # Include the admin URLs
-    path('api/', include('hospital.urls')),  # Include hospitals URLs
-    path('api/', include('patients.urls')),   # Include patients URLs
-    path('api/', include('doctors.urls')),    # Include doctors URLs
-    path('api/', include('lab.urls')),         # Include lab URLs
-    path('api/', include('pharmacy.urls')),    # Include pharmacy URLs
+    path('admin/', admin.site.urls),
+    path('api/', include('hospital.urls')),
+    path('api/', include('patients.urls')),
+    path('api/', include('doctors.urls')),
+    path('api/', include('lab.urls')),
+    path('api/', include('pharmacy.urls')),
     path('api/', include('nurse.urls')),
     path('api/', include('account.urls')),
-    path('api/', include('reception.urls')),   # Include nurse URLs
+    path('api/', include('reception.urls')),
+    path('analytics/', include('analytics.urls')),
 ]
 
 

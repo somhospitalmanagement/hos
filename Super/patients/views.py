@@ -11,10 +11,7 @@ import json
 
 @login_required
 def patient_list(request):
-    """
-    View to list all patients associated with the logged-in user's hospital.
-    """
-    patients = Patient.objects.filter(hospital=request.user.hospital)
+    patients = Patient.objects.filter(hospital=request.user.hospital).select_related('current_department')
     return render(request, 'patients/patient_list.html', {'patients': patients})
 
 @login_required

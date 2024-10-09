@@ -12,16 +12,16 @@ from .views import (
 )
 
 urlpatterns = [
-    # Authentication URLs
+    
     path('admin/login/', admin_login, name='admin_login'),
     path('user/login/', user_login, name='user_login'),
     path('logout/', logout_user, name='logout_user'),
 
-    # User management URLs
+    
     path('create-user/', create_user, name='create_user'),
     path('users/', list_users_by_role, name='list_users_by_role'),
 
-    # Password reset URLs
+    
     path('password-reset-request/', password_reset_request, name='password_reset_request'),
     path('password-reset/', password_reset, name='password_reset'),
 

@@ -20,16 +20,42 @@ class Pharmacist(models.Model):
             raise ValidationError(f"{self.department.name} is not a department of {self.hospital.name}.")
 
 
-class Prescription(models.Model):
+class MedicineInventory(models.Model):
     """
-    Model to represent prescriptions made for patients.
+    Model to represent medicine inventory in the pharmacy.
     """
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='prescriptions')
-    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.CASCADE, related_name='prescriptions')
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='medicine_inventory')
     medicine_name = models.CharField(max_length=255)
-    dosage = models.CharField(max_length=100)
-    instructions = models.TextField(blank=True, null=True)
-    date_prescribed = models.DateTimeField(auto_now_add=True)
+    quantity = models.PositiveIntegerField()
+    unit = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Prescription for {self.patient.user.username} by {self.pharmacist.user.username}"
+        return f"{self.medicine_name} - {self.quantity} {self.unit} at {self.hospital.name}"
+
+    class Meta:
+        unique_together = ['hospital', 'medicine_name']
+
+# Update the Prescription model
+class Prescription(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    pharmacist = models.ForeignKey(Pharmacist, on_delete=models.SET_NULL, null=True)
+    medicine_name = models.CharField(max_length=100)
+    quantity = models.PositiveIntegerField()
+    fulfilled = models.BooleanField(default=False)
+
+    def fulfill(self):
+        if not self.fulfilled:
+            inventory = MedicineInventory.objects.get(
+                hospital=self.pharmacist.hospital,
+                medicine_name=self.medicine_name
+            )
+            if inventory.quantity >= self.quantity:
+                inventory.quantity -= self.quantity
+                inventory.save()
+                self.fulfilled = True
+                self.save()
+            else:
+                raise ValidationError("Not enough medicine in inventory.")
+
+    def __str__(self):
+        return f"Prescription for {self.patient.first_name} {self.patient.last_name} by {self.pharmacist.user.username}"

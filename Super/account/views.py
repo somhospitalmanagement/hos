@@ -1,7 +1,6 @@
-# Super/account/views.py
 
-# Super/account/views.py
-
+from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -47,7 +46,11 @@ def create_user(request):
     logger.warning(f"User creation failed: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class CustomAnonRateThrottle(AnonRateThrottle):
+    rate = '5/minute'
+
 @api_view(['POST'])
+@throttle_classes([CustomAnonRateThrottle])
 def user_login(request):
     """
     User login to access department-specific functionalities.

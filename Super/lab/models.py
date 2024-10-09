@@ -21,14 +21,12 @@ class LabTechnician(models.Model):
 
 
 class LabTest(models.Model):
-    """
-    Model to represent lab tests conducted for patients.
-    """
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='lab_tests')
-    test_type = models.CharField(max_length=255)
-    results = models.TextField(blank=True, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    test_name = models.CharField(max_length=100)
+    test_result = models.TextField()
+    conducted_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     date_conducted = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Test: {self.test_type} for {self.patient.user.username}"
+        return f"{self.test_name} for {self.patient.first_name} {self.patient.last_name}"
 

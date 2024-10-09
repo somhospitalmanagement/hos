@@ -8,7 +8,7 @@ class LabTechnicianAdmin(admin.ModelAdmin):
 
 @admin.register(LabTest)
 class LabTestAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'test_type', 'date_conducted')
-    search_fields = ('patient__user__username', 'test_type')
+    list_display = ('patient', 'test_result', 'date_conducted')
+    search_fields = ('patient__user__username', 'test_name')
     list_filter = ('date_conducted',)
 
